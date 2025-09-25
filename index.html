@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ci racconti la tua esperienza?</title>
+  <meta name="description" content="Condividi la tua esperienza allo Studio Dentistico Zappia. Le tue parole aiutano altre persone a scegliere con serenità.">
+  <style>
+    :root{
+      --bg:#f7f7fb; --card:#ffffff; --ink:#1f2937; --muted:#6b7280; --accent:#2563eb; --accent-ink:#fff; --ring: rgba(37,99,235,.35);
+      --ok:#10b981; --warn:#f59e0b; --err:#ef4444; --shadow: 0 10px 25px rgba(0,0,0,.08); --radius:20px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji"; color:var(--ink); background:var(--bg); line-height:1.5;}
+    .wrap{max-width:1100px; margin:0 auto; padding:24px;}
+    header{display:flex; gap:18px; align-items:center; margin:8px 0 20px}
+    .brand{font-weight:700; letter-spacing:.2px; font-size:1.1rem}
+    .badge{font-size:.72rem; color:var(--muted)}
+    .layout{display:grid; grid-template-columns: 320px 1fr; gap:24px; align-items:flex-start}
+    @media (max-width: 1100px){.layout{grid-template-columns: 1fr}.guide{position:static; top:auto}}
+    .card{background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow)}
+    .hero{padding:28px}
+    h1{font-size:clamp(1.4rem, 1.2rem + 1.2vw, 2rem); margin:0 0 12px}
+    p{margin:0 0 12px}
+    .muted{color:var(--muted)}
+    .guide{position:sticky; top:16px; padding:20px}
+    .guide h3{margin:0 0 8px; font-size:1rem}
+    .guide ol{margin:8px 0 0 20px}
+    .guide li{margin:8px 0}
+    .hint{font-size:.86rem; color:var(--muted)}
+    form{padding:20px}
+    label{display:block; font-weight:600; margin:10px 0 6px}
+    textarea, input[type="text"], input[type="email"], select{
+      width:100%; border:1px solid #e5e7eb; background:#fff; color:var(--ink);
+      border-radius:14px; padding:12px 14px; outline:0; resize:vertical; min-height:auto; transition: box-shadow .2s, border-color .2s;
+      font-size:1rem; line-height:1.6;
+    }
+    textarea{min-height:200px; padding-bottom:36px}
+    textarea:focus, input:focus, select:focus{border-color:var(--accent); box-shadow:0 0 0 4px var(--ring)}
+    .row{display:grid; grid-template-columns: 1fr 1fr; gap:14px}
+    @media (max-width: 700px){ .row{grid-template-columns:1fr} }
+    .counter{position:relative; display:block; margin-top:6px; font-size:.8rem; color:var(--muted)}
+    .counter .len{font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1;}
+    .agree{display:flex; gap:10px; align-items:flex-start; margin:10px 0 0}
+    .agree input{width:20px; height:20px; margin-top:3px}
+    .cta{display:flex; flex-wrap:wrap; gap:10px; margin-top:18px}
+    .btn{appearance:none; border:0; background:var(--accent); color:var(--accent-ink); border-radius:14px; padding:12px 16px; font-weight:700; cursor:pointer; transition: transform .02s, filter .15s}
+    .btn.secondary{background:#111827; color:#fff}
+    .btn.ghost{background:#eef2ff; color:#3730a3}
+    .btn:active{transform:translateY(1px)}
+    .btn[disabled]{opacity:.5; cursor:not-allowed}
+    .legal{font-size:.86rem; color:var(--muted); margin-top:6px}
+    footer{padding:24px; text-align:center; font-size:.85rem; color:var(--muted)}
+    .success{display:none; padding:24px}
+    .success.active{display:block}
+    .hide-on-success.active{display:none}
+    .pill{display:inline-flex; gap:6px; align-items:center; border-radius:999px; padding:6px 10px; background:#eef2ff; color:#3730a3; font-size:.8rem; font-weight:600}
+    .toolbar{display:flex; gap:10px; align-items:center; justify-content:space-between; margin-top:8px}
+    .copybox{font-size:.85rem; color:var(--muted)}
+    .toast{position:fixed; right:16px; bottom:16px; background:#111827; color:#fff; padding:10px 12px; border-radius:10px; box-shadow:var(--shadow); opacity:0; transform:translateY(10px); transition: .3s}
+    .toast.show{opacity:1; transform:translateY(0)}
+    a{color:var(--accent)}
+    .guide.floating{position:fixed; left:16px; top:50%; transform:translateY(-50%); width:320px; z-index:50; max-height:82vh; overflow:auto}
+    @media (max-width: 1100px){ .guide.floating{left:8px; right:8px; top:8px; transform:none; width:auto; max-height:unset} }
+
+    /* PATCH TECNICHE */
+    .layout > *{ min-width:0; }
+    @media (max-width: 1100px){ .layout{ grid-template-columns: 1fr; } .guide{ position:static; top:auto; } }
+    @media (max-width: 900px){ .guide, .guide.floating{ position:static !important; top:auto !important; left:auto !important; right:auto !important; transform:none !important; width:auto !important; max-height:none !important; z-index:auto !important; } }
+  </style>
+</head>
+<body>
+  <script>window.dataLayer = window.dataLayer || [];</script>
+  <div class="wrap">
+    <header>
+      <img src="logo-zappia.png" alt="Logo Studio Dentistico Zappia" width="140" style="max-height:64px; object-fit:contain; box-shadow:var(--shadow); background:#16162f; border-radius:12px; padding:4px">
+      <div>
+        <div class="brand">Studio Dentistico Zappia</div>
+        <div class="badge">Genova Pontedecimo</div>
+      </div>
+    </header>
+
+    <div class="layout" id="layout">
+      <!-- GUIDA DOMANDE -->
+      <aside class="card guide" id="guide">
+        <div class="pill">Guida rapida</div>
+        <h3>Raccontaci la tua esperienza</h3>
+        <p class="hint">Puoi seguire questa traccia. È sempre a portata di mano.</p>
+        <ol>
+          <li>Quali erano i problemi relativi alla salute dei tuoi denti?</li>
+          <li>Quali erano le principali paure che avevi dal dentista? Sei riuscito a superarle grazie al nostro modo di lavorare?</li>
+          <li>Come ti sei trovato nel nostro studio? Sei rimasto soddisfatto del risultato ottenuto e dei miglioramenti ottenuti?</li>
+          <li>Consiglieresti ad altri famigliari/amici/colleghi di rivolgersi a noi per la cura del suo sorriso e quello dei suoi cari?</li>
+        </ol>
+        <p class="hint">Suggerimento: scrivi come parleresti ad un amico 😊</p>
+      </aside>
+
+      <main id="main">
+        <section class="card hero hide-on-success" id="intro">
+          <h1>Ci racconti la tua esperienza?</h1>
+          <p>Per noi è sempre molto importante fare in modo che ognuno dei nostri pazienti sia soddisfatto delle cure ricevute.</p>
+          <p>Ma non solo. Lavoriamo ogni giorno per far si che "la visita dal dentista" non sia più quello spauracchio che spesso fa tremare anche noi adulti, ma un momento sereno e senza timori.</p>
+          <p>Innanzi tutto, quindi, ti ringrazio per la fiducia che ci hai dato.</p>
+          <p>E visto che ormai ci conosciamo da un po' di tempo, ci piacerebbe molto ricevere una tua testimonianza sul lavoro fatto fin'ora.</p>
+          <p>Per comodità, qui accanto trovi qualche domanda che puoi utilizzare come traccia da seguire per raccontarci la tua esperienza.</p>
+          <p>Ti ringrazio in anticipo se vorrai dedicarci qualche minuto per lasciarci la tua opinione.</p>
+
+          <div class="cta" style="margin-top:18px">
+            <button class="btn" id="chooseAssist" type="button">Voglio una mano (consigliato)</button>
+            <button class="btn ghost" id="chooseManual" type="button">Scrivo liberamente</button>
+          </div>
+        </section>
+
+        <!-- FLOW ASSISTITO -->
+        <section class="card hide-on-success" id="assistFlow" style="display:none;">
+          <form id="assistForm" style="padding:20px">
+            <div class="row">
+              <div>
+                <label for="nome2">Il tuo nome</label>
+                <input type="text" id="nome2" placeholder="Es. Maria R." required>
+              </div>
+              <div>
+                <label for="email2">Email (solo per eventuali chiarimenti – non verrà pubblicata)</label>
+                <input type="email" id="email2" placeholder="esempio@mail.com">
+              </div>
+            </div>
+
+            <label for="aq1">1) Quali erano i problemi relativi alla salute dei tuoi denti?</label>
+            <textarea id="aq1" placeholder="Es. gengive che sanguinavano, sensibilità al freddo..."></textarea>
+
+            <label for="aq2">2) Quali erano le principali paure che avevi dal dentista? Sei riuscito a superarle grazie al nostro modo di lavorare?</label>
+            <textarea id="aq2" placeholder="Es. ansia, paura del dolore; spiegazioni chiare mi hanno tranquillizzato..."></textarea>
+
+            <label for="aq3">3) Come ti sei trovato nel nostro studio? Sei rimasto soddisfatto del risultato ottenuto e dei miglioramenti ottenuti?</label>
+            <textarea id="aq3" placeholder="Es. ambiente sereno, personale gentile, risultati soddisfacenti..."></textarea>
+
+            <label for="aq4">4) Consiglieresti ad altri famigliari/amici/colleghi di rivolgersi a noi per la cura del suo sorriso e quello dei suoi cari?</label>
+            <textarea id="aq4" placeholder="Es. sì, lo consiglierei a chi ha timore del dentista perché..."></textarea>
+
+            <div class="cta">
+              <button class="btn" id="draftBtn" type="button">Verifica la tua bozza</button>
+              <button class="btn ghost" id="clearAssist" type="button">Pulisci</button>
+            </div>
+
+            <div class="preview" id="assistPreview" style="display:none">
+              <h3>Anteprima modificabile</h3>
+              <p class="note">Se qualcosa non ti rappresenta, modifica liberamente prima di approvare. Tu sei l'autore del testo.</p>
+              <textarea id="assistDraft" style="min-height:220px"></textarea>
+
+              <div class="agree">
+                <input id="consenso2" type="checkbox">
+                <label for="consenso2" style="font-weight:500">Autorizzo lo Studio Dentistico Zappia a utilizzare la mia testimonianza (anche parziale) all’interno di materiali informativi e sul sito, ai sensi della normativa vigente.</label>
+              </div>
+              <div class="legal">Vedi la nostra <a id="privacyLink2" href="#" target="_blank" rel="noopener">Privacy Policy</a>.</div>
+
+              <div class="toolbar">
+                <div class="copybox">Invia via email o copia il testo approvato.</div>
+                <div class="cta">
+                  <button class="btn" id="sendAssistMail" type="button">Invia via Email</button>
+                  <button class="btn secondary" id="copyAssistDraft" type="button">Copia il testo</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </section>
+
+        <!-- FLOW LIBERO -->
+        <section class="card hide-on-success" id="manualFlow" style="display:none;">
+          <form id="manualForm" style="padding:20px">
+            <div class="row">
+              <div>
+                <label for="nome">Il tuo nome</label>
+                <input type="text" id="nome" name="nome" placeholder="Es. Maria R." required>
+              </div>
+              <div>
+                <label for="email">Email (solo per eventuali chiarimenti – non verrà pubblicata)</label>
+                <input type="email" id="email" name="email" placeholder="esempio@mail.com">
+              </div>
+            </div>
+
+            <label for="freeText">Scrivi liberamente la tua testimonianza</label>
+            <textarea id="freeText" placeholder="Raccontaci la tua esperienza, anche in poche righe. La guida a sinistra può aiutarti."></textarea>
+            <span class="counter">Lunghezza: <span class="len" data-for="freeText">0</span> caratteri</span>
+
+            <div class="agree">
+              <input id="consenso" type="checkbox" required>
+              <label for="consenso" style="font-weight:500">Autorizzo lo Studio Dentistico Zappia a utilizzare la mia testimonianza (anche parziale) all’interno di materiali informativi e sul sito, ai sensi della normativa vigente.</label>
+            </div>
+            <div class="legal">Vedi la nostra <a id="privacyLink1" href="#" target="_blank" rel="noopener">Privacy Policy</a>.</div>
+
+            <div class="toolbar">
+              <div class="copybox">Puoi prima revisionare il testo e poi inviare.</div>
+              <div class="cta">
+                <button class="btn" id="reviseBtn" type="button">Revisiona</button>
+                <button class="btn" id="makeEmail" type="button">Invia via Email</button>
+                <button class="btn secondary" id="copyText" type="button">Copia il testo</button>
+              </div>
+            </div>
+          </form>
+
+          <footer>© <span id="year"></span> Studio Dentistico Zappia – Genova Pontedecimo</footer>
+        </section>
+
+        <section class="card success" id="success">
+          <h2>Grazie! 🎉</h2>
+          <p>La tua testimonianza è pronta. Puoi <a id="mailtoLink" href="#">inviarla via email</a> oppure condividerla come preferisci.</p>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Copiato negli appunti ✅</div>
+
+  <script>
+    /* ====== CONFIG ====== */
+    const WEBHOOK_URL = 'https://hook.eu2.make.com/q7a9tq9snbwpcutra8lkw4ynkf6vt53p';
+    const DEST_EMAIL  = 'studio.dott.zappia@gmail.com';
+    const PRIVACY_URL = '#';
+    const CONSENT_LINE = 'Dichiaro di autorizzare lo Studio Dentistico Zappia a utilizzare la mia testimonianza (anche parziale) all\'interno di materiali informativi e sul sito, ai sensi della normativa vigente.';
+
+    /* ====== UTILS ====== */
+    const $  = (s, r=document) => r.querySelector(s);
+    const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+    function dl(x){ window.dataLayer = window.dataLayer || []; window.dataLayer.push(x); }
+    function esc(s){ return encodeURIComponent(s); }
+    async function postJSON(url, payload){
+      const r = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+      const ct = (r.headers.get('content-type')||'').toLowerCase();
+      let data = null;
+      try{
+        if(ct.includes('application/json')){
+          data = await r.json();
+        } else {
+          const txt = await r.text();
+          data = { text: txt };
+        }
+      }catch(e){
+        try { data = { text: await r.text() }; } catch(_) { data = { text: '' }; }
+      }
+      if(!r.ok){ throw new Error('HTTP '+r.status+' '+(data ? JSON.stringify(data).slice(0,200) : '')); }
+      return data;
+    }
+
+    /* ====== INIT ====== */
+    $('#privacyLink1') && ($('#privacyLink1').href = PRIVACY_URL);
+    $('#privacyLink2') && ($('#privacyLink2').href = PRIVACY_URL);
+    $('#year') && ($('#year').textContent = new Date().getFullYear());
+
+    // Counter lunghezza
+    $$('.counter .len').forEach(c => {
+      const id = c.getAttribute('data-for');
+      const el = document.getElementById(id);
+      const update = () => c.textContent = (el?.value || '').length;
+      el?.addEventListener('input', update); update();
+    });
+
+    /* ====== SWITCH MODALITÀ ====== */
+    const guide = $('#guide');
+    const assistFlow = $('#assistFlow');
+    const manualFlow = $('#manualFlow');
+
+    $('#chooseAssist')?.addEventListener('click', ()=>{
+      assistFlow.style.display='block';
+      manualFlow.style.display='none';
+      guide?.classList.remove('floating');
+      dl({event:'mode_assist'});
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+    $('#chooseManual')?.addEventListener('click', ()=>{
+      assistFlow.style.display='none';
+      manualFlow.style.display='block';
+      guide?.classList.remove('floating');
+      dl({event:'mode_manual'});
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+
+    /* ====== ASSISTITO: GENERAZIONE ====== */
+    function buildRiassuntoFromAssist(){
+      const nome = $('#nome2')?.value.trim() || '';
+      const q1 = $('#aq1')?.value.trim() || '';
+      const q2 = $('#aq2')?.value.trim() || '';
+      const q3 = $('#aq3')?.value.trim() || '';
+      const q4 = $('#aq4')?.value.trim() || '';
+      const lines = [];
+      if (nome) lines.push(`nome: ${nome}`);
+      if (q1)   lines.push(`problemi: ${q1}`);
+      if (q2)   lines.push(`paure: ${q2}`);
+      if (q3)   lines.push(`esperienza: ${q3}`);
+      if (q4)   lines.push(`consiglio: ${q4}`);
+      return lines.join('\n');
+    }
+
+    function synthLocalDraft(p){
+      const A = p.answers; const nome = p.nome;
+      const intro   = 'Voglio raccontare in poche righe la mia esperienza allo Studio Dentistico Zappia.';
+      const b1 = A.problemi  ? `Prima di arrivare allo Studio Zappia avevo ${A.problemi}.` : '';
+      const b2 = A.paure     ? `Confesso che ${A.paure}.` : '';
+      const b3 = A.esperienza? `In studio ho trovato un ambiente attento e professionale: ${A.esperienza}.` : '';
+      const b4 = A.consiglio ? `Per questo consiglio lo Studio a chi cerca un approccio chiaro e gentile: ${A.consiglio}.` : '';
+      const outro   = 'Spero che la mia esperienza possa essere utile a chi sta cercando di affrontare la visita con più serenità.';
+      let text = [intro, b1, b2, b3, b4, outro].filter(Boolean).join(' ');
+      text = text.replace(/\s+/g,' ').trim();
+      if(nome) text += `\n\n— ${nome}`;
+      return text || 'Scrivi qualche riga nei campi qui sopra e poi clicca su "Verifica la tua bozza".';
+    }
+
+    function showAssistPreview(){
+  $('#assistPreview').style.display='block';
+  const c = $('#consenso2');
+  if (c) { c.required = true; }         // <- aggiunge required ora che è visibile
+  window.scrollTo({top: $('#assistPreview').offsetTop - 20, behavior:'smooth'});
+}
+
+
+    async function generateAssist(){
+      if(!$('#assistForm').reportValidity()) return;
+      const btn = $('#draftBtn');
+      const prev = btn.textContent; btn.textContent = 'Sto preparando la bozza…'; btn.disabled = true;
+      dl({event:'assist_generate_attempt'});
+
+      const riassunto = buildRiassuntoFromAssist();
+
+      // 1) tenta Make (AI)
+      try{
+        const res = await postJSON(WEBHOOK_URL, { testo: riassunto });
+        let out = '';
+        if(res){
+          // normalizza possibili chiavi usate nello scenario Make
+          out = res.text || res.output || res.result || res.message || (typeof res === 'string' ? res : '');
+        }
+        if (out && typeof out === 'string'){
+          $('#assistDraft').value = out.trim();
+          showAssistPreview();
+          btn.textContent = prev; btn.disabled = false;
+          return;
+        }
+      }catch(e){ console.warn('Make webhook error or non-JSON response:', e); }
+
+      // 2) fallback locale
+      const payload = {
+        nome:  $('#nome2')?.value.trim() || '',
+        email: $('#email2')?.value.trim() || '',
+        answers: {
+          problemi:   $('#aq1')?.value.trim() || '',
+          paure:      $('#aq2')?.value.trim() || '',
+          esperienza: $('#aq3')?.value.trim() || '',
+          consiglio:  $('#aq4')?.value.trim() || ''
+        },
+        mode:'generate'
+      };
+      $('#assistDraft').value = synthLocalDraft(payload);
+      dl({event:'assist_local_fallback'});
+      showAssistPreview();
+      btn.textContent = prev; btn.disabled = false;
+    }
+
+    $('#draftBtn')?.addEventListener('click', generateAssist);
+
+    // Pulisci
+    $('#clearAssist')?.addEventListener('click', ()=>{
+      ['aq1','aq2','aq3','aq4','assistDraft','nome2','email2'].forEach(id=>{ const el = document.getElementById(id); if(el) el.value=''; });
+      const c = $('#consenso2'); if(c) c.checked=false;
+      $('#assistPreview').style.display='none';
+    });
+
+    /* ====== ASSISTITO: COPY/EMAIL ====== */
+    const toast = $('#toast');
+    function showToast(msg){ toast.textContent = msg; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'), 1600); }
+
+    $('#copyAssistDraft')?.addEventListener('click', async ()=>{
+      try{ await navigator.clipboard.writeText($('#assistDraft').value); showToast('Copiato negli appunti ✅'); dl({event:'assist_copy'}); }
+      catch(e){ showToast('Impossibile copiare: seleziona e copia manualmente.'); }
+    });
+
+    function buildEmailBodyFromAssist(){
+      const body = $('#assistDraft').value || '';
+      const sign = '\n\n---\n' + CONSENT_LINE;
+      return (body + sign).trim();
+    }
+
+    $('#sendAssistMail')?.addEventListener('click', ()=>{
+      if(!$('#consenso2').checked){ alert('Per favore, spunta la casella di autorizzazione.'); return; }
+      const subject = 'La mia testimonianza per Studio Dentistico Zappia';
+      const href = `mailto:${esc(DEST_EMAIL)}?subject=${esc(subject)}&body=${esc(buildEmailBodyFromAssist())}`;
+      const link = $('#mailtoLink'); link.href = href; link.click();
+      $('#success').classList.add('active');
+      $$('.hide-on-success').forEach(el=>el.classList.add('active'));
+      window.scrollTo({top:0,behavior:'smooth'});
+      dl({event:'assist_email_prepare'});
+    });
+
+    /* ====== LIBERA: REVISIONE + INVIO ====== */
+    function buildManualText(){
+      const nome = $('#nome')?.value.trim()||'';
+      const testo = $('#freeText')?.value.trim()||'';
+      const firma = nome ? `\n\n— ${nome}` : '';
+      return (testo + firma).trim();
+    }
+    function synthLocalRevise(txt){
+      let t = (txt||'').replace(/\s+/g,' ').trim();
+      if(!t) return '';
+      t = t.charAt(0).toUpperCase() + t.slice(1);
+      if(!/[\.?!]$/.test(t)) t += '.';
+      return t;
+    }
+
+    $('#reviseBtn')?.addEventListener('click', ()=>{
+      if(!$('#manualForm').reportValidity()) return;
+      const raw = $('#freeText').value;
+      const revised = synthLocalRevise(raw);
+      if(!revised){ alert('Scrivi qualcosa prima di revisionare.'); return; }
+      const ok = confirm('Sostituire il testo con la versione revisionata?');
+      if(ok){ $('#freeText').value = revised; showToast('Testo revisionato'); }
+    });
+
+    $('#copyText')?.addEventListener('click', async ()=>{
+      try{ await navigator.clipboard.writeText(buildManualText()); showToast('Copiato negli appunti ✅'); dl({event:'manual_copy'}); }
+      catch(e){ showToast('Impossibile copiare: seleziona e copia manualmente.'); }
+    });
+
+    function buildEmailBodyFromManual(){
+      const body = buildManualText();
+      const sign = '\n\n---\n' + CONSENT_LINE;
+      return (body + sign).trim();
+    }
+
+    $('#makeEmail')?.addEventListener('click', ()=>{
+      if(!$('#manualForm').reportValidity()) return;
+      if(!$('#consenso').checked){ alert('Per favore, spunta la casella di autorizzazione.'); return; }
+      const subject = 'La mia testimonianza per Studio Dentistico Zappia';
+      const href = `mailto:${esc(DEST_EMAIL)}?subject=${esc(subject)}&body=${esc(buildEmailBodyFromManual())}`;
+      const link = $('#mailtoLink'); link.href = href; link.click();
+      $('#success').classList.add('active');
+      $$('.hide-on-success').forEach(el=>el.classList.add('active'));
+      window.scrollTo({top:0,behavior:'smooth'});
+      dl({event:'manual_email_prepare'});
+    });
+  </script>
+</body>
+</html>
