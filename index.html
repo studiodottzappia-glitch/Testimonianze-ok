@@ -163,6 +163,17 @@
   .helper-fab, .helper-panel{ display: none !important; }
 }
 
+/* Mostra messaggi diversi in base al dispositivo */
+@media (max-width: 700px) {
+  .desktop-only { display: none; }
+  .mobile-only { display: block; }
+}
+@media (min-width: 701px) {
+  .desktop-only { display: block; }
+  .mobile-only { display: none; }
+}
+
+
   </style>
 </head>
 <body>
@@ -181,7 +192,9 @@
       <aside class="card guide" id="guide">
         <div class="pill">Guida rapida</div>
         <h3>Raccontaci la tua esperienza</h3>
-        <p class="hint">Puoi seguire questa traccia. È sempre a portata di mano.</p>
+        <p class="hint desktop-only">Puoi seguire questa traccia: la trovi sempre nella colonna a sinistra.</p>
+<p class="hint mobile-only">Tocca il “?” in basso a destra per aprire i suggerimenti mentre scrivi.</p>
+
         <ol>
           <li>Quali erano i problemi relativi alla salute dei tuoi denti?</li>
           <li>Quali erano le principali paure che avevi dal dentista? Sei riuscito a superarle grazie al nostro modo di lavorare?</li>
@@ -757,4 +770,5 @@
 
 </body>
 </html>
+
 
