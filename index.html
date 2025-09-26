@@ -67,6 +67,102 @@
     .layout > *{ min-width:0; }
     @media (max-width: 1100px){ .layout{ grid-template-columns: 1fr; } .guide{ position:static; top:auto; } }
     @media (max-width: 900px){ .guide, .guide.floating{ position:static !important; top:auto !important; left:auto !important; right:auto !important; transform:none !important; width:auto !important; max-height:none !important; z-index:auto !important; } }
+
+/* === Modale Privacy Policy (aggiornata con scroll) === */
+.modal {
+  display: none; /* nascosta di default */
+  position: fixed;
+  z-index: 999; /* sopra tutto */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6); /* sfondo scuro */
+  overflow-y: auto; /* scroll verticale se il contenuto è alto */
+  padding: 20px; /* spazio tra bordo e contenuto */
+}
+
+.modal-content {
+  background: #fff;
+  margin: 40px auto; /* margine sopra e sotto */
+  padding: 20px;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 12px;
+  position: relative;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  font-family: inherit;
+  max-height: calc(100vh - 80px); /* la finestra non supera l'altezza schermo */
+  overflow-y: auto; /* scroll solo dentro la finestra bianca */
+}
+
+.close {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: #000;
+}
+
+.privacy-link {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* === Pannello guida mobile flottante (solo mobile) === */
+@media (max-width: 700px){
+  .helper-fab{
+    position: fixed; right: 16px; bottom: 16px;
+    width: 52px; height: 52px; border-radius: 999px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--accent); color: var(--accent-ink);
+    font-weight: 800; font-size: 22px; line-height: 1;
+    box-shadow: var(--shadow); cursor: pointer; z-index: 960;
+    user-select: none;
+  }
+  .helper-fab:active{ transform: translateY(1px); }
+
+  .helper-panel{
+    position: fixed; right: 12px; left: 12px; bottom: 12px;
+    max-width: 480px; margin: 0 auto;
+    background: #fff; color: var(--ink);
+    border-radius: 18px; box-shadow: var(--shadow);
+    transform: translateY(12px); opacity: 0; pointer-events: none;
+    transition: .18s ease; z-index: 950;
+    display: flex; flex-direction: column; max-height: 60vh;
+    border: 1px solid #e5e7eb;
+  }
+  .helper-panel.open{ transform: translateY(0); opacity: 1; pointer-events: auto; }
+
+  .helper-head{
+    position: sticky; top: 0; z-index: 1;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 14px; border-bottom: 1px solid #eef2ff;
+    background: #fff; border-top-left-radius: 18px; border-top-right-radius: 18px;
+    font-weight: 700;
+  }
+  .helper-close{
+    appearance: none; border: 0; background: transparent; cursor: pointer;
+    font-size: 22px; line-height: 1; padding: 6px; color: var(--muted);
+  }
+  .helper-body{
+    padding: 12px 14px; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    font-size: .95rem;
+  }
+  .helper-body ol{ margin: 0 0 6px 18px; }
+  .helper-hint{ font-size: .85rem; color: var(--muted); margin-top: 6px; }
+}
+/* Nasconde il pannello/flottante su schermi più larghi: desktop resta invariato */
+@media (min-width: 701px){
+  .helper-fab, .helper-panel{ display: none !important; }
+}
+
   </style>
 </head>
 <body>
@@ -151,7 +247,12 @@
                 <input id="consenso2" type="checkbox">
                 <label for="consenso2" style="font-weight:500">Autorizzo lo Studio Dentistico Zappia a utilizzare la mia testimonianza (anche parziale) all’interno di materiali informativi e sul sito, ai sensi della normativa vigente.</label>
               </div>
-              <div class="legal">Vedi la nostra <a id="privacyLink2" href="#" target="_blank" rel="noopener">Privacy Policy</a>.</div>
+              <!-- Sezione link alla Privacy Policy -->
+<div class="legal">
+  Vedi la nostra 
+  <a id="privacyLink2" href="#" class="privacy-link">Privacy Policy</a>.
+</div>
+
 
               <div class="toolbar">
                 <div class="copybox">Invia via email o copia il testo approvato.</div>
@@ -186,7 +287,9 @@
               <input id="consenso" type="checkbox" required>
               <label for="consenso" style="font-weight:500">Autorizzo lo Studio Dentistico Zappia a utilizzare la mia testimonianza (anche parziale) all’interno di materiali informativi e sul sito, ai sensi della normativa vigente.</label>
             </div>
-            <div class="legal">Vedi la nostra <a id="privacyLink1" href="#" target="_blank" rel="noopener">Privacy Policy</a>.</div>
+            <div class="legal">Vedi la nostra
+  <a id="privacyLink1" href="#" class="privacy-link">Privacy Policy</a>.
+</div>
 
             <div class="toolbar">
               <div class="copybox">Puoi prima revisionare il testo e poi inviare.</div>
@@ -378,16 +481,41 @@
       return (body + sign).trim();
     }
 
-    $('#sendAssistMail')?.addEventListener('click', ()=>{
-      if(!$('#consenso2').checked){ alert('Per favore, spunta la casella di autorizzazione.'); return; }
-      const subject = 'La mia testimonianza per Studio Dentistico Zappia';
-      const href = `mailto:${esc(DEST_EMAIL)}?subject=${esc(subject)}&body=${esc(buildEmailBodyFromAssist())}`;
-      const link = $('#mailtoLink'); link.href = href; link.click();
-      $('#success').classList.add('active');
-      $$('.hide-on-success').forEach(el=>el.classList.add('active'));
-      window.scrollTo({top:0,behavior:'smooth'});
-      dl({event:'assist_email_prepare'});
-    });
+   $('#sendAssistMail')?.addEventListener('click', async ()=>{
+  if(!$('#assistForm').reportValidity()) return;
+  if(!$('#consenso2').checked){ alert('Per favore, spunta la casella di autorizzazione.'); return; }
+
+  const payload = {
+    mode: 'assistito',
+    nome:  $('#nome2')?.value.trim() || '',
+    email: $('#email2')?.value.trim() || '',
+    testo: ($('#assistDraft')?.value || '').trim(),
+    consenso: true,
+    ts: new Date().toISOString(),
+    ua: navigator.userAgent,
+    ref: location.href
+  };
+
+  try{
+    await postJSON(WEBHOOK_URL, payload);       // invia a Make (Route B)
+    $('#success').classList.add('active');      // UI ok (già presente)
+    $$('.hide-on-success').forEach(el=>el.classList.add('active'));
+    window.scrollTo({top:0,behavior:'smooth'});
+    dl({event:'assist_email_sent'});
+  }catch(e){
+    console.warn('Webhook Make fallito, uso mailto fallback:', e);
+    const subject = 'La mia testimonianza per Studio Dentistico Zappia';
+    const body = (payload.testo + '\n\n---\n' + CONSENT_LINE).trim();
+    const href = `mailto:${esc(DEST_EMAIL)}?subject=${esc(subject)}&body=${esc(body)}`;
+    const link = $('#mailtoLink'); link.href = href; link.click();
+
+    $('#success').classList.add('active');
+    $$('.hide-on-success').forEach(el=>el.classList.add('active'));
+    window.scrollTo({top:0,behavior:'smooth'});
+    dl({event:'assist_email_fallback'});
+  }
+});
+
 
     /* ====== LIBERA: REVISIONE + INVIO ====== */
     function buildManualText(){
@@ -424,17 +552,209 @@
       return (body + sign).trim();
     }
 
-    $('#makeEmail')?.addEventListener('click', ()=>{
-      if(!$('#manualForm').reportValidity()) return;
-      if(!$('#consenso').checked){ alert('Per favore, spunta la casella di autorizzazione.'); return; }
-      const subject = 'La mia testimonianza per Studio Dentistico Zappia';
-      const href = `mailto:${esc(DEST_EMAIL)}?subject=${esc(subject)}&body=${esc(buildEmailBodyFromManual())}`;
-      const link = $('#mailtoLink'); link.href = href; link.click();
-      $('#success').classList.add('active');
-      $$('.hide-on-success').forEach(el=>el.classList.add('active'));
-      window.scrollTo({top:0,behavior:'smooth'});
-      dl({event:'manual_email_prepare'});
-    });
+    $('#makeEmail')?.addEventListener('click', async ()=>{
+  if(!$('#manualForm').reportValidity()) return;
+  if(!$('#consenso').checked){ alert('Per favore, spunta la casella di autorizzazione.'); return; }
+
+  const nome  = $('#nome')?.value.trim() || '';
+  const testo = ($('#freeText')?.value || '').trim();
+  const payload = {
+    mode: 'libero',
+    nome,
+    email: $('#email')?.value.trim() || '',
+    testo: (testo + (nome ? `\n\n— ${nome}` : '')).trim(),
+    consenso: true,
+    ts: new Date().toISOString(),
+    ua: navigator.userAgent,
+    ref: location.href
+  };
+
+  try{
+    await postJSON(WEBHOOK_URL, payload);       // invia a Make (Route B)
+    $('#success').classList.add('active');      // UI ok (già presente)
+    $$('.hide-on-success').forEach(el=>el.classList.add('active'));
+    window.scrollTo({top:0,behavior:'smooth'});
+    dl({event:'manual_email_sent'});
+  }catch(e){
+    console.warn('Webhook Make fallito, uso mailto fallback:', e);
+    const subject = 'La mia testimonianza per Studio Dentistico Zappia';
+    const body = (payload.testo + '\n\n---\n' + CONSENT_LINE).trim();
+    const href = `mailto:${esc(DEST_EMAIL)}?subject=${esc(subject)}&body=${esc(body)}`;
+    const link = $('#mailtoLink'); link.href = href; link.click();
+
+    $('#success').classList.add('active');
+    $$('.hide-on-success').forEach(el=>el.classList.add('active'));
+    window.scrollTo({top:0,behavior:'smooth'});
+    dl({event:'manual_email_fallback'});
+  }
+});
+
   </script>
+
+<!-- Modale Privacy Policy (unica, fuori dai flussi) -->
+<div id="privacyModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="privacyTitle">
+  <div class="modal-content">
+    <span class="close" aria-label="Chiudi">&times;</span>
+
+    <h2 id="privacyTitle">Privacy Policy</h2>
+    <p>
+      Ai sensi del Regolamento (UE) 2016/679 (“GDPR”), Studio Dentistico Zappia, con sede in Genova Pontedecimo, informa che i dati personali forniti dall’interessato tramite il presente modulo saranno trattati in modo lecito, corretto e trasparente.
+    </p>
+
+    <h3>1. Finalità del trattamento</h3>
+    <p>I dati saranno raccolti e trattati per le seguenti finalità:</p>
+    <ul>
+      <li>Gestione della richiesta di contatto e dell’appuntamento;</li>
+      <li>Eventuale utilizzo della testimonianza fornita (anche parziale) su materiali informativi, siti web, social network e altre comunicazioni promozionali dello Studio, esclusivamente previo consenso dell’interessato;</li>
+      <li>Adempimenti di legge e obblighi fiscali connessi all’attività sanitaria.</li>
+    </ul>
+
+    <h3>2. Modalità di trattamento</h3>
+    <p>I dati saranno trattati con strumenti informatici e cartacei, adottando misure di sicurezza idonee a garantirne la riservatezza e l’integrità.</p>
+
+    <h3>3. Base giuridica</h3>
+    <p>La base giuridica del trattamento è:</p>
+    <ul>
+      <li>L’esecuzione di misure precontrattuali e contrattuali richieste dall’interessato (prenotazione e gestione appuntamenti);</li>
+      <li>Il consenso espresso per l’utilizzo della testimonianza a fini informativi e promozionali;</li>
+      <li>L’adempimento di obblighi legali.</li>
+    </ul>
+
+    <h3>4. Conservazione dei dati</h3>
+    <p>I dati saranno conservati per il tempo strettamente necessario alle finalità indicate e, nel caso di testimonianze, fino a eventuale revoca del consenso.</p>
+
+    <h3>5. Comunicazione e diffusione</h3>
+    <p>I dati non saranno diffusi, ma potranno essere comunicati a fornitori di servizi strettamente connessi alle finalità sopra indicate (es. hosting del sito, servizi cloud, software di gestione dello studio), che agiscono come Responsabili del Trattamento.</p>
+
+    <h3>6. Diritti dell’interessato</h3>
+    <p>L’interessato può esercitare i diritti previsti dagli articoli 15-22 del GDPR, tra cui:</p>
+    <ul>
+      <li>Accesso ai propri dati personali;</li>
+      <li>Rettifica o cancellazione degli stessi;</li>
+      <li>Limitazione o opposizione al trattamento;</li>
+      <li>Portabilità dei dati;</li>
+      <li>Revoca del consenso in qualsiasi momento, senza pregiudicare la liceità del trattamento basata sul consenso prestato prima della revoca.</li>
+    </ul>
+
+    <h3>7. Titolare del trattamento</h3>
+    <p>
+      <strong>Studio Dentistico Zappia</strong><br>
+      Via Felice del Canto 39R, Genova Pontedecimo (GE)<br>
+      Email: <a href="mailto:info@studiodentisticozappia.it">info@studiodentisticozappia.it</a>
+    </p>
+
+    <h3>8. Reclamo</h3>
+    <p>
+      L’interessato ha il diritto di proporre reclamo all’Autorità Garante per la protezione dei dati personali
+      (<a href="https://www.garanteprivacy.it" target="_blank" rel="noopener">www.garanteprivacy.it</a>).
+    </p>
+  </div>
+</div>
+
+<!-- Script: apre la stessa modale da entrambi i link (assistito e libero) -->
+<script>
+  (function () {
+    const modal = document.getElementById("privacyModal");
+    const closeBtn = modal.querySelector(".close");
+
+    // intercetta #privacyLink1, #privacyLink2 e qualsiasi .privacy-link
+    const privacyLinks = document.querySelectorAll("#privacyLink1, #privacyLink2, .privacy-link");
+
+    privacyLinks.forEach(link => {
+      // assicura che non apra nuove schede
+      link.removeAttribute("target");
+      link.removeAttribute("rel");
+
+      link.addEventListener("click", function (e) {
+        e.preventDefault();
+        modal.style.display = "block";
+        document.body.style.overflow = "hidden"; // blocca lo scroll sotto
+      });
+    });
+
+    function closeModal() {
+      modal.style.display = "none";
+      document.body.style.overflow = ""; // ripristina scroll
+    }
+
+    closeBtn.addEventListener("click", closeModal);
+    window.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+    window.addEventListener("keydown", (e) => { if (e.key === "Escape" && modal.style.display === "block") closeModal(); });
+  })();
+</script>
+
+<!-- Pannello guida mobile flottante -->
+<div id="helperFab" class="helper-fab" aria-controls="helperPanel" aria-expanded="false" aria-label="Mostra traccia">?</div>
+
+<div id="helperPanel" class="helper-panel" role="dialog" aria-modal="true" aria-labelledby="helperTitle" aria-hidden="true">
+  <div class="helper-head">
+    <span id="helperTitle">Traccia per la tua testimonianza</span>
+    <button id="helperClose" class="helper-close" aria-label="Chiudi">&times;</button>
+  </div>
+  <div class="helper-body">
+    <p class="helper-hint">Suggerimenti rapidi (puoi seguire liberamente):</p>
+    <ol>
+      <li>Qual era il problema o il disagio iniziale?</li>
+      <li>Perché hai scelto lo Studio Zappia?</li>
+      <li>Accoglienza e comunicazione: cosa ti ha colpito?</li>
+      <li>Il trattamento: dolore, spiegazioni, tempi.</li>
+      <li>Il risultato: cosa è migliorato concretamente?</li>
+      <li>Lo consiglieresti? A chi e perché?</li>
+      <li>Un dettaglio personale che rende unica l’esperienza.</li>
+    </ol>
+    <p class="helper-hint">Chiudi questa finestra per continuare a scrivere.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  const mq = window.matchMedia('(max-width: 700px)');
+  const fab   = document.getElementById('helperFab');
+  const panel = document.getElementById('helperPanel');
+  const closeBtn = document.getElementById('helperClose');
+
+  function openPanel(){
+    panel.classList.add('open');
+    panel.setAttribute('aria-hidden','false');
+    fab.setAttribute('aria-expanded','true');
+    // niente backdrop per non interferire con la tua Privacy Modal
+    document.body.style.overflow = 'hidden';
+  }
+  function closePanel(){
+    panel.classList.remove('open');
+    panel.setAttribute('aria-hidden','true');
+    fab.setAttribute('aria-expanded','false');
+    document.body.style.overflow = '';
+  }
+
+  function isManualVisible(){
+    // visibilità reale della sezione “Scrivo liberamente”
+    const flow = document.getElementById('manualFlow');
+    if(!flow) return false;
+    const style = window.getComputedStyle(flow);
+    return style.display !== 'none' && style.visibility !== 'hidden';
+  }
+  function updateFab(){
+    const show = mq.matches && isManualVisible();
+    fab.style.display = show ? 'flex' : 'none';
+    if(!show) closePanel();
+  }
+
+  // Toggle in base ai bottoni che già usi
+  document.getElementById('chooseManual')?.addEventListener('click', ()=> setTimeout(updateFab, 50));
+  document.getElementById('chooseAssist')?.addEventListener('click', ()=> setTimeout(updateFab, 50));
+
+  // Apertura/chiusura
+  fab.addEventListener('click', openPanel);
+  closeBtn.addEventListener('click', closePanel);
+  window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape' && panel.classList.contains('open')) closePanel(); });
+
+  // Prima valutazione + resize
+  updateFab();
+  window.addEventListener('resize', updateFab);
+})();
+</script>
+
 </body>
 </html>
+
